@@ -15,7 +15,7 @@ export class ZaloUser implements INodeType {
 		displayName: 'Zalo User',
 		name: 'zaloUser',
 		icon: 'file:../shared/zalo.svg',
-		group: ['Zalo'],
+		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Quản lý người dùng Zalo',
@@ -63,16 +63,20 @@ export class ZaloUser implements INodeType {
 		const imeiFromCred = zaloCred.imei as string;
 		const userAgentFromCred = zaloCred.userAgent as string;
 
-		const cookie = cookieFromCred ?? items.find((x) => x.json.cookie)?.json.cookie as any;
-		const imei = imeiFromCred ?? items.find((x) => x.json.imei)?.json.imei as string;
-		const userAgent = userAgentFromCred ?? items.find((x) => x.json.userAgent)?.json.userAgent as string;
+		const cookie = cookieFromCred ?? (items.find((x) => x.json.cookie)?.json.cookie as any);
+		const imei = imeiFromCred ?? (items.find((x) => x.json.imei)?.json.imei as string);
+		const userAgent =
+			userAgentFromCred ?? (items.find((x) => x.json.userAgent)?.json.userAgent as string);
 
 		const zalo = new Zalo();
 		const _api = await zalo.login({ cookie, imei, userAgent });
 		api = _api;
 
 		if (!api) {
-			throw new NodeOperationError(this.getNode(), 'No API instance found. Please make sure to provide valid credentials.');
+			throw new NodeOperationError(
+				this.getNode(),
+				'No API instance found. Please make sure to provide valid credentials.',
+			);
 		}
 
 		for (let i = 0; i < items.length; i++) {
@@ -86,9 +90,9 @@ export class ZaloUser implements INodeType {
 
 						returnData.push({
 							json: {
-                                status: "Thành công",
-                                response: response,
-                            },
+								status: 'Thành công',
+								response: response,
+							},
 							pairedItem: {
 								item: i,
 							},
@@ -104,9 +108,9 @@ export class ZaloUser implements INodeType {
 
 						returnData.push({
 							json: {
-                                status: "Thành công",
-                                response: response,
-                            },
+								status: 'Thành công',
+								response: response,
+							},
 							pairedItem: {
 								item: i,
 							},
@@ -121,9 +125,9 @@ export class ZaloUser implements INodeType {
 
 						returnData.push({
 							json: {
-                                status: "Thành công",
-                                response: response,
-                            },
+								status: 'Thành công',
+								response: response,
+							},
 							pairedItem: {
 								item: i,
 							},
@@ -138,9 +142,9 @@ export class ZaloUser implements INodeType {
 
 						returnData.push({
 							json: {
-                                status: "Thành công",
-                                response: response,
-                            },
+								status: 'Thành công',
+								response: response,
+							},
 							pairedItem: {
 								item: i,
 							},
@@ -156,9 +160,9 @@ export class ZaloUser implements INodeType {
 
 					// 	returnData.push({
 					// 		json: {
-                    //             status: "Thành công",
-                    //             response: response,
-                    //         },
+					//             status: "Thành công",
+					//             response: response,
+					//         },
 					// 		pairedItem: {
 					// 			item: i,
 					// 		},
@@ -171,13 +175,13 @@ export class ZaloUser implements INodeType {
 						const dob = this.getNodeParameter('dob', i) as any;
 						const gender = this.getNodeParameter('gender', i) as number;
 
-						const response = await api.updateProfile(name, dob, gender);
+						const response = await api.updateProfile({ profile: { name, dob, gender } });
 
 						returnData.push({
 							json: {
-                                status: "Thành công",
-                                response: response,
-                            },
+								status: 'Thành công',
+								response: response,
+							},
 							pairedItem: {
 								item: i,
 							},
@@ -207,8 +211,8 @@ export class ZaloUser implements INodeType {
 
 						returnData.push({
 							json: {
-                                friends: friends,
-                            },
+								friends: friends,
+							},
 							pairedItem: {
 								item: i,
 							},
@@ -238,7 +242,7 @@ export class ZaloUser implements INodeType {
 
 						returnData.push({
 							json: {
-								status: "Thành công",
+								status: 'Thành công',
 								response: response,
 							},
 							pairedItem: {
@@ -256,14 +260,14 @@ export class ZaloUser implements INodeType {
 
 						const UndoOptions = {
 							msgId: msgId,
-							cliMsgId: cliMsgId
-						}
+							cliMsgId: cliMsgId,
+						};
 
 						const response = await api.undo(UndoOptions, threadId, type);
 
 						returnData.push({
 							json: {
-								status: "Thành công",
+								status: 'Thành công',
 								response: response,
 							},
 							pairedItem: {

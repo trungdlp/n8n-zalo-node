@@ -5,7 +5,7 @@ import {
 	INodeTypeDescription,
 	NodeOperationError
 } from 'n8n-workflow';
-import { API, ThreadType, Zalo } from 'zca-js';
+import { API, DestType, ThreadType, Zalo } from 'zca-js';
 import { saveFile, removeFile } from '../utils/helper';
 
 let api: API | undefined;
@@ -15,7 +15,7 @@ export class ZaloSendMessage implements INodeType {
 		displayName: 'Zalo Send Message',
 		name: 'zaloSendMessage',
 		icon: 'file:../shared/zalo.svg',
-		group: ['Zalo'],
+		group: ['transform'],
 		version: 4,
 		description: 'Gửi tin nhắn qua API Zalo sử dụng kết nối đăng nhập bằng cookie',
 		defaults: {
@@ -226,6 +226,7 @@ export class ZaloSendMessage implements INodeType {
 				const threadId = this.getNodeParameter('threadId', i) as string;
 				const typeNumber = this.getNodeParameter('type', i) as number;
 				const type = typeNumber === 0 ? ThreadType.User : ThreadType.Group;
+				const dstType = typeNumber === 0 ? DestType.User : DestType.Group;
 				const message = this.getNodeParameter('message', i) as string;
 				const urgency = this.getNodeParameter('urgency', i, 0) as number;
 				const quote = this.getNodeParameter('quote', i, {}) as any;
@@ -285,11 +286,10 @@ export class ZaloSendMessage implements INodeType {
 				try {
 					const recipentObj = {
 						id : threadId,
-						type: type
+						type: type,
+						dstType: dstType
 					}
-					const result = await api.sendTypingEvent(recipentObj.id, {
-						type: recipentObj.type
-					});
+					const result = await api.sendTypingEvent(recipentObj.id, recipentObj.type, recipentObj.dstType);
 					if (!!result) {
 						this.logger.info("Send! typing event")
 					}

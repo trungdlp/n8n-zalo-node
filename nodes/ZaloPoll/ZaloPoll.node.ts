@@ -16,7 +16,7 @@ export class ZaloPoll implements INodeType {
             displayName: 'Zalo Poll',
             name: 'zaloPoll',
             icon: 'file:../shared/zalo.svg',
-            group: ['Zalo'],
+            group: ['transform'],
             version: 1,
             subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
             description: 'Quản bình chọn Zalo',
@@ -172,7 +172,7 @@ export class ZaloPoll implements INodeType {
                             throw new NodeOperationError(this.getNode(), 'Zalo API not initialized', { itemIndex: i });
                         }
 
-                        const response = await api.getPollDetail(poll_id);
+                        const response = await api.getPollDetail(parseInt(poll_id));
 
                         this.logger.info('Get poll successfully', { response});
 
